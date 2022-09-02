@@ -79,7 +79,8 @@ void SplitBasicBlock::split(Function *f) {
     // Or ones containing a PHI node
     if (curr->size() < 2 || containsPHI(curr) ||
         /* 2022.8.31 nehyci
-           BasicBlockSplit does not appear to be compatible with SwiftError */
+           BasicBlockSplit does not seem to be compatible with SwiftError?
+           I'm not sure */
         containsSwiftError(curr)) {
       continue;
     }

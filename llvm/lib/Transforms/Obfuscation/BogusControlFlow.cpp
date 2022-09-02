@@ -183,7 +183,8 @@ struct BogusControlFlow : public FunctionPass {
     // If fla annotations
     if (toObfuscate(flag, &F, "bcf")) {
       /* 2022.8.31 nehyci
-         BogusControlFlow does not appear to be compatible with SwiftError */
+         BogusControlFlow does not seem to be compatible with SwiftError and presplit coroutine ?
+         I'm not sure */
       if (F.isPresplitCoroutine()) {
         return false;
       }

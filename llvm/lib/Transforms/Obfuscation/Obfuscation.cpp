@@ -85,12 +85,10 @@ struct Obfuscation : public ModulePass {
   }
   bool runOnModule(Module &M) override {
 #if LLVM_VERSION_MAJOR >= 15
-    bool OpaquePointersHasBeenSet = false;
     if (EnableAllObfuscation || EnableAntiClassDump || EnableStringEncryption || EnableFlattening || EnableIndirectBranching ||
         EnableBogusControlFlow) {
       // TODO: Update Obfuscation Passes to Opaque Pointers
       if (!M.getContext().supportsTypedPointers()) {
-        OpaquePointersHasBeenSet = true;
         M.getContext().setOpaquePointers(false);
       }
     }
@@ -183,11 +181,8 @@ struct Obfuscation : public ModulePass {
     }
 
 #if LLVM_VERSION_MAJOR >= 15
-    if (EnableAllObfuscation || EnableAntiClassDump || EnableStringEncryption ||
-        EnableFlattening || EnableIndirectBranching || EnableBogusControlFlow) {
-      if (OpaquePointersHasBeenSet) {
-        M.getContext().setOpaquePointers(true);
-      }
+    if (M.getContext().supportsTypedPointers()) {
+      M.getContext().setOpaquePointers(true);
     }
 #endif
     errs() << "Hikari Out\n";
