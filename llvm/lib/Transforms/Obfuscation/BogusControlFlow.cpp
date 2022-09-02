@@ -146,7 +146,8 @@ namespace {
     }
     else if (!isa<Function>(C))
 #if LLVM_VERSION_MAJOR >= 12
-      if (isa<Type>(C->getType()))
+      if (isa<ArrayType>(C->getType()) || isa<StructType>(C->getType()) ||
+          isa<StructType>(C->getType()))
 #else
       if (isa<CompositeType>(C->getType()))
 #endif
@@ -187,13 +188,6 @@ struct BogusControlFlow : public FunctionPass {
          I'm not sure */
       if (F.isPresplitCoroutine()) {
         return false;
-      }
-      for (auto &I : instructions(F)) {
-        if (const AllocaInst *AI = dyn_cast<AllocaInst>(&I)) {
-          if (AI->isSwiftError()) {
-            return false;
-          }
-        }
       }
 
       errs() << "Running BogusControlFlow On " << F.getName() << "\n";
@@ -242,7 +236,7 @@ struct BogusControlFlow : public FunctionPass {
       std::list<BasicBlock *> basicBlocks;
       for (Function::iterator i = F.begin(); i != F.end(); ++i) {
         BasicBlock *BB = &*i;
-        if (!BB->isEHPad() && !BB->isLandingPad()) {
+        if (!BB->isEHPad() && !BB->isLandingPad() && !containsSwiftError(BB)) {
           basicBlocks.push_back(BB);
         }
       }
@@ -278,6 +272,17 @@ struct BogusControlFlow : public FunctionPass {
       }
       // firstTime = false;
     } while (--NumObfTimes > 0);
+  }
+
+  bool containsSwiftError(BasicBlock *b) {
+    for (auto &I : *b) {
+      if (const AllocaInst *AI = dyn_cast<AllocaInst>(&I)) {
+        if (AI->isSwiftError()) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /* addBogusFlow

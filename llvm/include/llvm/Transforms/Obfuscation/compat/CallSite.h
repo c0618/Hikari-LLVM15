@@ -299,7 +299,7 @@ public:
     cast<InvokeInst>(II)->METHOD
 
   unsigned getNumArgOperands() const {
-#if LLVM_VERSION_MAJOR >= 13
+#if LLVM_VERSION_MAJOR >= 14
     CALLSITE_DELEGATE_GETTER(arg_size());
 #else
     CALLSITE_DELEGATE_GETTER(getNumArgOperands());

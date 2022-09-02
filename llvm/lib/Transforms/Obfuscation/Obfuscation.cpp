@@ -91,6 +91,7 @@ struct Obfuscation : public ModulePass {
       // TODO: Update Obfuscation Passes to Opaque Pointers
       if (!M.getContext().supportsTypedPointers()) {
         OpaquePointersHasBeenSetToFalseByObf = true;
+        // https://llvm.org/docs/OpaquePointers.html
         M.getContext().setOpaquePointers(false);
       }
     }
