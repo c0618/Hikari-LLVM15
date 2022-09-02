@@ -1308,7 +1308,7 @@ PassBuilder::buildPerModuleDefaultPipeline(OptimizationLevel Level,
          "Must request optimizations for the default pipeline!");
 
   ModulePassManager MPM;
-
+  // add Obfuscation Pass for new pass manager
   MPM.addPass(ObfuscationPass());
 
   // Convert @llvm.global.annotations to !annotation metadata.
@@ -1352,7 +1352,7 @@ PassBuilder::buildThinLTOPreLinkDefaultPipeline(OptimizationLevel Level) {
          "Must request optimizations for the default pipeline!");
 
   ModulePassManager MPM;
-
+  // add Obfuscation Pass for new pass manager
   MPM.addPass(ObfuscationPass());
 
   // Convert @llvm.global.annotations to !annotation metadata.
@@ -1408,7 +1408,7 @@ PassBuilder::buildThinLTOPreLinkDefaultPipeline(OptimizationLevel Level) {
 ModulePassManager PassBuilder::buildThinLTODefaultPipeline(
     OptimizationLevel Level, const ModuleSummaryIndex *ImportSummary) {
   ModulePassManager MPM;
-
+  // add Obfuscation Pass for new pass manager
   MPM.addPass(ObfuscationPass());
 
   // Convert @llvm.global.annotations to !annotation metadata.
@@ -1476,7 +1476,7 @@ ModulePassManager
 PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
                                      ModuleSummaryIndex *ExportSummary) {
   ModulePassManager MPM;
-
+  // add Obfuscation Pass for new pass manager
   MPM.addPass(ObfuscationPass());
 
   // Convert @llvm.global.annotations to !annotation metadata.
@@ -1777,7 +1777,7 @@ ModulePassManager PassBuilder::buildO0DefaultPipeline(OptimizationLevel Level,
          "buildO0DefaultPipeline should only be used with O0");
 
   ModulePassManager MPM;
-
+  // add Obfuscation Pass for new pass manager
   MPM.addPass(ObfuscationPass());
 
   // Perform pseudo probe instrumentation in O0 mode. This is for the
