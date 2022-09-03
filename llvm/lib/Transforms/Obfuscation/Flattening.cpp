@@ -123,7 +123,7 @@ bool Flattening::flatten(Function *f) {
   loopEnd = BasicBlock::Create(f->getContext(), "loopEnd", f, insert);
 
 #if LLVM_VERSION_MAJOR >= 15
-  load = new LoadInst(switchVar->getType()->getNonOpaquePointerElementType(), switchVar, "switchVar", loopEntry);
+  load = new LoadInst(switchVar->getAllocatedType(), switchVar, "switchVar", loopEntry);
 #elif LLVM_VERSION_MAJOR >= 14
   load = new LoadInst(switchVar->getType()->getPointerElementType(), switchVar, "switchVar", loopEntry);
 #elif LLVM_VERSION_MAJOR >= 10

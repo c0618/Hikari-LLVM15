@@ -84,18 +84,6 @@ struct Obfuscation : public ModulePass {
     return StringRef("HikariObfuscationScheduler");
   }
   bool runOnModule(Module &M) override {
-#if LLVM_VERSION_MAJOR >= 15
-    bool OpaquePointersHasBeenSetToFalseByObf = false;
-    if (EnableAllObfuscation || EnableAntiClassDump || EnableStringEncryption || EnableFlattening || EnableIndirectBranching ||
-        EnableBogusControlFlow) {
-      // TODO: Update Obfuscation Passes to Opaque Pointers
-      if (!M.getContext().supportsTypedPointers()) {
-        OpaquePointersHasBeenSetToFalseByObf = true;
-        // https://llvm.org/docs/OpaquePointers.html
-        M.getContext().setOpaquePointers(false);
-      }
-    }
-#endif
     // Initial ACD Pass
     if (EnableAllObfuscation || EnableAntiClassDump) {
       ModulePass *P = createAntiClassDumpPass();
@@ -183,11 +171,6 @@ struct Obfuscation : public ModulePass {
       F->eraseFromParent();
     }
 
-#if LLVM_VERSION_MAJOR >= 15
-    if (OpaquePointersHasBeenSetToFalseByObf) {
-      M.getContext().setOpaquePointers(true);
-    }
-#endif
     errs() << "Hikari Out\n";
     return true;
   } // End runOnModule

@@ -111,8 +111,8 @@ struct IndirectBranch : public FunctionPass {
                              indexmap[BI->getSuccessor(0)]);
       }
 #if LLVM_VERSION_MAJOR >= 15
-      Value *GEP = IRB.CreateGEP(LoadFrom->getType()->getScalarType()->getNonOpaquePointerElementType(), LoadFrom, {zero, index});
-      LoadInst *LI = IRB.CreateLoad(GEP->getType()->getNonOpaquePointerElementType(), GEP, "IndirectBranchingTargetAddress");
+      Value *GEP = IRB.CreateGEP(LoadFrom->getValueType(), LoadFrom, {zero, index});
+      LoadInst *LI = IRB.CreateLoad(GEP->getType(), GEP, "IndirectBranchingTargetAddress");
 #elif LLVM_VERSION_MAJOR >= 14
       Value *GEP = IRB.CreateGEP(LoadFrom->getType()->getScalarType()->getPointerElementType(), LoadFrom, {zero, index});
       LoadInst *LI = IRB.CreateLoad(GEP->getType()->getPointerElementType(), GEP, "IndirectBranchingTargetAddress");

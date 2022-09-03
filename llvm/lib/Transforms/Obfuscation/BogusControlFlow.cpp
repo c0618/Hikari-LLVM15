@@ -761,8 +761,8 @@ struct BogusControlFlow : public FunctionPass {
           new GlobalVariable(M, Type::getInt32Ty(M.getContext()), false,
                              GlobalValue::PrivateLinkage, RHSC, "RHSGV");
 #if LLVM_VERSION_MAJOR >= 15
-      LoadInst *LHS = IRBReal.CreateLoad(LHSGV->getType()->getNonOpaquePointerElementType(), LHSGV, "Initial LHS");
-      LoadInst *RHS = IRBReal.CreateLoad(RHSGV->getType()->getNonOpaquePointerElementType(), RHSGV, "Initial LHS");
+      LoadInst *LHS = IRBReal.CreateLoad(LHSGV->getValueType(), LHSGV, "Initial LHS");
+      LoadInst *RHS = IRBReal.CreateLoad(RHSGV->getValueType(), RHSGV, "Initial LHS");
 #elif LLVM_VERSION_MAJOR >= 14
       LoadInst *LHS = IRBReal.CreateLoad(LHSGV->getType()->getPointerElementType(), LHSGV, "Initial LHS");
       LoadInst *RHS = IRBReal.CreateLoad(RHSGV->getType()->getPointerElementType(), RHSGV, "Initial LHS");

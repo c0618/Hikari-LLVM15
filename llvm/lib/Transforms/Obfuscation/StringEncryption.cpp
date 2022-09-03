@@ -270,7 +270,7 @@ struct StringEncryption : public ModulePass {
     HandleDecryptionBlock(B, C, GV2Keys);
     // Add atomic load checking status in A
 #if LLVM_VERSION_MAJOR >= 15
-    LoadInst *LI = IRB.CreateLoad(StatusGV->getType()->getNonOpaquePointerElementType(), StatusGV, "LoadEncryptionStatus");
+    LoadInst *LI = IRB.CreateLoad(StatusGV->getValueType(), StatusGV, "LoadEncryptionStatus");
 #elif LLVM_VERSION_MAJOR >= 14
     LoadInst *LI = IRB.CreateLoad(StatusGV->getType()->getPointerElementType(), StatusGV, "LoadEncryptionStatus");
 #else
@@ -307,7 +307,7 @@ struct StringEncryption : public ModulePass {
       vals.push_back(CS->getOperand(0));
       vals.push_back(CS->getOperand(1));
 #if LLVM_VERSION_MAJOR >= 15
-      Constant *GEPed = ConstantExpr::getInBoundsGetElementPtr(cast<PointerType>(newString->getType()->getScalarType())->getNonOpaquePointerElementType(), newString, {zero, zero});
+      Constant *GEPed = ConstantExpr::getInBoundsGetElementPtr(newString->getValueType(), newString, {zero, zero});
 #elif LLVM_VERSION_MAJOR >= 13
       Constant *GEPed = ConstantExpr::getInBoundsGetElementPtr(cast<PointerType>(newString->getType()->getScalarType())->getPointerElementType(), newString, {zero, zero});
 #else
@@ -342,9 +342,9 @@ struct StringEncryption : public ModulePass {
       for (unsigned i = 0; i < CastedCDA->getType()->getNumElements(); i++) {
         Value *offset = ConstantInt::get(Type::getInt32Ty(B->getContext()), i);
 #if LLVM_VERSION_MAJOR >= 15
-        Value *EncryptedGEP = IRB.CreateGEP(iter->second.second->getType()->getScalarType()->getNonOpaquePointerElementType(), iter->second.second, {zero, offset});
-        Value *DecryptedGEP = IRB.CreateGEP(iter->first->getType()->getScalarType()->getNonOpaquePointerElementType(), iter->first, {zero, offset});
-        LoadInst *LI = IRB.CreateLoad(EncryptedGEP->getType()->getNonOpaquePointerElementType(), EncryptedGEP, "EncryptedChar");
+        Value *EncryptedGEP = IRB.CreateGEP(iter->second.second->getValueType(), iter->second.second, {zero, offset});
+        Value *DecryptedGEP = IRB.CreateGEP(iter->first->getValueType(), iter->first, {zero, offset});
+        LoadInst *LI = IRB.CreateLoad(CastedCDA->getElementType(), EncryptedGEP, "EncryptedChar");
 #elif LLVM_VERSION_MAJOR >= 14
         Value *EncryptedGEP = IRB.CreateGEP(iter->second.second->getType()->getScalarType()->getPointerElementType(), iter->second.second, {zero, offset});
         Value *DecryptedGEP = IRB.CreateGEP(iter->first->getType()->getScalarType()->getPointerElementType(), iter->first, {zero, offset});
